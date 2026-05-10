@@ -1,9 +1,4 @@
-/**
- * Login Page Component
- * Handles user authentication with email and password
- * Features glassmorphic UI design with smooth animations
- * @author Harsh Chimnani
- */
+
 import { useState, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';

@@ -2,7 +2,7 @@
  * Expense Controller
  * Handles all CRUD operations for user expenses
  * Includes AI-powered financial insights via Google Gemini API
- * @author Harsh Chimnani
+
  */
 
 const Expense = require('../models/Expense');

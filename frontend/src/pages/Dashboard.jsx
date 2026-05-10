@@ -1,9 +1,4 @@
-/**
- * Dashboard Page - Main application view
- * Displays expense overview, data visualizations, and AI insights
- * Integrated with Gemini AI for financial analysis
- * @author Harsh Chimnani
- */
+
 import { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import AuthContext from '../context/AuthContext';

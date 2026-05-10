@@ -2,7 +2,6 @@
  * Auth Controller
  * Handles user registration and authentication
  * Includes JWT token generation and welcome email dispatch
- * @author Harsh Chimnani
  */
 
 const User = require('../models/User');

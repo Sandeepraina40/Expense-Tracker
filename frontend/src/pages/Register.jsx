@@ -1,9 +1,4 @@
-/**
- * Register Page Component
- * Handles new user registration with form validation
- * Features glassmorphic design consistent with login page
- * @author Harsh Chimnani
- */
+
 import { useState, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
