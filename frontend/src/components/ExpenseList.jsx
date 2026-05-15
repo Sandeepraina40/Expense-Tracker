@@ -8,8 +8,7 @@ import { useCallback } from 'react';
 import { Trash2, Receipt } from 'lucide-react';
 import axios from 'axios';
 
-// API base URL from environment configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config/api';
 
 // Category color mapping for visual distinction
 const CATEGORY_STYLES = {

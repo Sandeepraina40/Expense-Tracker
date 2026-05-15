@@ -6,7 +6,12 @@
  */
 
 const Expense = require('../models/Expense');
-const { GoogleGenAI } = require('@google/genai');
+const {
+  parseGeminiError,
+  generateStructuredInsights,
+  generateQuickTips,
+  answerFinancialQuestion: askGemini,
+} = require('../utils/geminiService');
 
 // ============================================================
 // @desc    Get all expenses for the authenticated user
@@ -127,77 +132,67 @@ const deleteExpense = async (req, res) => {
 // ============================================================
 const getExpenseInsights = async (req, res) => {
   try {
-    // Verify Gemini API key is configured
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      console.error('GEMINI_API_KEY is not set in environment variables');
-      return res.status(500).json({
-        message: 'AI service is not configured. Please contact the administrator.',
-      });
-    }
-
-    // Fetch all expenses for the current user
     const expenses = await Expense.find({ user: req.user.id });
 
-    if (!expenses || expenses.length === 0) {
+    if (!expenses?.length) {
       return res.status(200).json({
-        insights: "You haven't added any expenses yet. Start tracking your spending to receive personalized AI-powered financial insights!",
+        structured: false,
+        insights:
+          "You haven't added any expenses yet. Start tracking your spending to receive personalized AI insights!",
       });
     }
 
-    // Calculate total spending amount
-    const totalAmount = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-
-    // Aggregate spending by category for detailed breakdown
-    const categoryBreakdown = {};
-    expenses.forEach((expense) => {
-      const { category, amount } = expense;
-      categoryBreakdown[category] = (categoryBreakdown[category] || 0) + amount;
-    });
-
-    // Format category data for the AI prompt
-    const categoryReport = Object.entries(categoryBreakdown)
-      .sort(([, a], [, b]) => b - a) // Sort by amount descending
-      .map(([category, amount]) => `- ${category}: $${amount.toFixed(2)}`)
-      .join('\n');
-
-    // Construct the AI analysis prompt
-    const analysisPrompt = `I am a user of an expense tracker app. I need some short, helpful financial insights based on my spending.
-
-My total expenses are $${totalAmount.toFixed(2)} across ${expenses.length} transactions.
-
-Here is the breakdown by category (sorted by highest spend):
-${categoryReport}
-
-Please provide a 2-3 paragraph brief analysis of my spending habits, identify areas where I could save money, and close with an encouraging statement. Keep it concise, friendly, and helpful.`;
-
-    // Initialize Gemini AI client and generate content
-    console.log('Generating AI insights for user:', req.user.id);
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: analysisPrompt,
-    });
-
-    // Extract and validate the response text
-    const insightText = response.text;
-    if (!insightText) {
-      console.error('Gemini API returned empty response for user:', req.user.id);
-      return res.status(500).json({
-        message: 'AI returned an empty response. Please try again later.',
-      });
-    }
-
-    console.log('AI insights generated successfully for user:', req.user.id);
-    res.status(200).json({ insights: insightText });
+    const result = await generateStructuredInsights(expenses);
+    res.status(200).json(result);
   } catch (error) {
     console.error('AI Insights error:', error.message || error);
-    const statusCode = error.status === 429 ? 429 : 500;
-    const errorMessage = error.status === 429
-      ? 'AI service rate limit reached. Please wait a moment and try again.'
-      : `Failed to generate AI insights: ${error.message || 'Unknown error'}`;
+    const { status, message } = parseGeminiError(error);
+    res.status(status).json({ message });
+  }
+};
 
-    res.status(statusCode).json({ message: errorMessage });
+const getQuickTips = async (req, res) => {
+  try {
+    const expenses = await Expense.find({ user: req.user.id });
+
+    if (!expenses?.length) {
+      return res.status(200).json({
+        tips: ['Add your first expense to unlock personalized AI tips.'],
+      });
+    }
+
+    const tips = await generateQuickTips(expenses);
+    res.status(200).json({ tips });
+  } catch (error) {
+    console.error('AI Quick tips error:', error.message || error);
+    const { status, message } = parseGeminiError(error);
+    res.status(status).json({ message });
+  }
+};
+
+const askFinancialQuestion = async (req, res) => {
+  try {
+    const { question } = req.body;
+
+    if (!question?.trim()) {
+      return res.status(400).json({ message: 'Please provide a question.' });
+    }
+
+    const expenses = await Expense.find({ user: req.user.id });
+
+    if (!expenses?.length) {
+      return res.status(200).json({
+        answer:
+          'You have no expenses recorded yet. Add transactions first, then I can answer questions about your spending.',
+      });
+    }
+
+    const answer = await askGemini(expenses, question);
+    res.status(200).json({ answer });
+  } catch (error) {
+    console.error('AI Ask error:', error.message || error);
+    const { status, message } = parseGeminiError(error);
+    res.status(status).json({ message });
   }
 };
 
@@ -207,4 +202,6 @@ module.exports = {
   updateExpense,
   deleteExpense,
   getExpenseInsights,
+  getQuickTips,
+  askFinancialQuestion,
 };

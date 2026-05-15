@@ -18,8 +18,7 @@ const EXPENSE_CATEGORIES = [
   'Other',
 ];
 
-// API base URL from environment configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config/api';
 
 const ExpenseForm = ({ onExpenseAdded }) => {
   // Form field states with sensible defaults

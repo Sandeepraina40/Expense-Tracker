@@ -1,25 +1,23 @@
-require('dotenv').config();
-const { GoogleGenAI } = require('@google/genai');
+require('dotenv').config({ override: true });
+const { getModel, generateText, parseGeminiError } = require('./utils/geminiService');
 
 async function test() {
-  console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
-  console.log('API Key (first 10 chars):', process.env.GEMINI_API_KEY?.substring(0, 10) + '...');
-  
+  console.log('Model:', getModel());
+  console.log('API Key configured:', !!process.env.GEMINI_API_KEY);
+
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    console.log('GoogleGenAI initialized successfully');
-    
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: 'Say hello in one sentence.'
-    });
-    
-    console.log('Response text:', response.text);
-    console.log('SUCCESS!');
+    const text = await generateText('Reply with exactly: Gemini is working.');
+    console.log('Response:', text);
+    console.log('SUCCESS — AI is configured correctly.');
   } catch (error) {
-    console.error('ERROR:', error.message);
-    console.error('Status:', error.status);
-    console.error('Full error:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    const { status, message } = parseGeminiError(error);
+    console.error('FAILED (HTTP', status + '):', message);
+    if (message.toLowerCase().includes('api key')) {
+      console.error('\n→ Get a new key: https://aistudio.google.com/apikey');
+      console.error('→ Add to backend/.env: GEMINI_API_KEY=your_key_here');
+      console.error('→ Restart the backend server.');
+    }
+    process.exit(1);
   }
 }
 

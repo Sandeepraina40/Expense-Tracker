@@ -2,8 +2,14 @@
 backend/node_modules/
 frontend/node_modules/
 
+# Secrets — never commit
 .env
-.env.*
-
+.env.local
 backend/.env
 frontend/.env
+
+# Allow committed env templates for deploy
+!frontend/.env.development
+!frontend/.env.production
+!frontend/.env.example
+!backend/.env.example

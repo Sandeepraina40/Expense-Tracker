@@ -7,8 +7,7 @@
 import { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 
-// API base URL from environment configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config/api';
 
 // Local storage key for persisting user session
 const USER_STORAGE_KEY = 'userInfo';
