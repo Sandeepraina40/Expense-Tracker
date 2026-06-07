@@ -1,14 +1,8 @@
-/**
- * ExpenseForm Component
- * Form for adding new expense entries with category selection
- * Supports amount, category, date, and description fields
- * @author Harsh Chimnani
- */
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { Plus, DollarSign, Tag, Calendar, FileText } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
-// Available expense categories for classification
 const EXPENSE_CATEGORIES = [
   'Food',
   'Transport',
@@ -18,10 +12,7 @@ const EXPENSE_CATEGORIES = [
   'Other',
 ];
 
-import { API_BASE_URL } from '../config/api';
-
 const ExpenseForm = ({ onExpenseAdded }) => {
-  // Form field states with sensible defaults
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
@@ -29,7 +20,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Reset form fields after successful submission
   const resetForm = useCallback(() => {
     setAmount('');
     setCategory('');
@@ -38,18 +28,13 @@ const ExpenseForm = ({ onExpenseAdded }) => {
     setError('');
   }, []);
 
-  // Handle form submission - create a new expense entry
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
-
-    // Validate required fields
     if (!amount || !category || !description) {
       setError('Please fill in all required fields.');
       return;
     }
-
-    // Validate amount is a positive number
     const numericAmount = Number(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
       setError('Please enter a valid positive amount.');
@@ -72,8 +57,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
         expenseData,
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-
-      // Notify parent component and reset form
       onExpenseAdded(data);
       resetForm();
     } catch (err) {
@@ -91,8 +74,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
         <Plus className="h-5 w-5 text-blue-400" />
         Add Expense
       </h3>
-
-      {/* Error Display */}
       {error && (
         <div className="mb-4 rounded-xl bg-red-500/10 p-3 border border-red-500/20 text-sm text-red-400 animate-fade-in">
           {error}
@@ -100,7 +81,7 @@ const ExpenseForm = ({ onExpenseAdded }) => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5 flex flex-col">
-        {/* Amount Input */}
+
         <div className="space-y-1.5">
           <label htmlFor="expense-amount" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
             <DollarSign className="h-3.5 w-3.5 text-slate-400" />
@@ -119,8 +100,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             style={{ colorScheme: 'dark' }}
           />
         </div>
-
-        {/* Category Selection */}
         <div className="space-y-1.5">
           <label htmlFor="expense-category" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
             <Tag className="h-3.5 w-3.5 text-slate-400" />
@@ -141,7 +120,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
           </select>
         </div>
 
-        {/* Date Picker */}
         <div className="space-y-1.5">
           <label htmlFor="expense-date" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
             <Calendar className="h-3.5 w-3.5 text-slate-400" />
@@ -157,8 +135,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             style={{ colorScheme: 'dark' }}
           />
         </div>
-
-        {/* Description Input */}
         <div className="space-y-1.5">
           <label htmlFor="expense-description" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
             <FileText className="h-3.5 w-3.5 text-slate-400" />
@@ -175,8 +151,6 @@ const ExpenseForm = ({ onExpenseAdded }) => {
             placeholder="What was this for?"
           />
         </div>
-
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}

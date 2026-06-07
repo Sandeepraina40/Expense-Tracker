@@ -1,21 +1,15 @@
-
 import { useState, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import { LogIn, Activity, Mail, Lock } from 'lucide-react';
 
 const Login = () => {
-  // Form field states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Auth context and navigation hooks
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  // Handle form submission and authentication
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
@@ -29,7 +23,7 @@ const Login = () => {
         setError(result.message);
         setLoading(false);
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.');
       setLoading(false);
     }
@@ -37,13 +31,13 @@ const Login = () => {
 
   return (
     <div className="relative flex h-screen min-h-screen items-center justify-center overflow-hidden bg-[#020617]">
-      {/* Animated Background Gradient Orbs */}
+
       <div className="absolute top-[-10%] left-[-10%] h-96 w-96 rounded-full bg-blue-600/20 blur-[120px] mix-blend-screen animate-pulse-slow"></div>
       <div className="absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-purple-600/20 blur-[120px] mix-blend-screen animate-pulse-slow font-delay-2000"></div>
       <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] h-72 w-72 rounded-full bg-indigo-600/10 blur-[100px] mix-blend-screen"></div>
 
       <div className="relative z-10 w-full max-w-md px-6 animate-slide-up">
-        {/* Brand Header Section */}
+
         <div className="mb-10 text-center flex flex-col items-center">
           <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-purple-500 shadow-lg shadow-blue-500/30 mb-6">
             <Activity className="h-8 w-8 text-white" />
@@ -55,10 +49,7 @@ const Login = () => {
             Sign in to continue managing your expenses.
           </p>
         </div>
-
-        {/* Login Form Card with Glassmorphic Styling */}
         <div className="glass rounded-3xl p-8 sm:p-10">
-          {/* Error Alert Display */}
           {error && (
             <div
               className="mb-6 rounded-xl bg-red-500/10 p-4 border border-red-500/20 text-sm text-red-400 flex items-center gap-3 animate-fade-in"
@@ -70,7 +61,7 @@ const Login = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-            {/* Email Input Field */}
+
             <div className="space-y-1.5">
               <label htmlFor="login-email" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <Mail className="h-3.5 w-3.5 text-slate-400" />
@@ -88,7 +79,7 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Input Field */}
+
             <div className="space-y-1.5">
               <label htmlFor="login-password" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <Lock className="h-3.5 w-3.5 text-slate-400" />
@@ -106,7 +97,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Submit Button with Loading State */}
             <button
               type="submit"
               disabled={loading}
@@ -125,8 +115,6 @@ const Login = () => {
               )}
             </button>
           </form>
-
-          {/* Navigation Link to Register Page */}
           <div className="mt-8 text-center text-sm">
             <span className="text-slate-400">Don't have an account? </span>
             <Link

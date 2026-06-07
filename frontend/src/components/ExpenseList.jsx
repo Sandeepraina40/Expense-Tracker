@@ -1,16 +1,8 @@
-/**
- * ExpenseList Component
- * Displays a scrollable list of expense transactions
- * Supports deletion with confirmation dialog
- * @author Harsh Chimnani
- */
 import { useCallback } from 'react';
 import { Trash2, Receipt } from 'lucide-react';
 import axios from 'axios';
 
 import { API_BASE_URL } from '../config/api';
-
-// Category color mapping for visual distinction
 const CATEGORY_STYLES = {
   'Food': 'bg-orange-500/20 text-orange-400 border-orange-500/20',
   'Transport': 'bg-blue-500/20 text-blue-400 border-blue-500/20',
@@ -19,15 +11,8 @@ const CATEGORY_STYLES = {
   'Shopping': 'bg-purple-500/20 text-purple-400 border-purple-500/20',
   'Other': 'bg-slate-500/20 text-slate-300 border-slate-500/20',
 };
-
-// Default style for unknown categories
 const DEFAULT_CATEGORY_STYLE = CATEGORY_STYLES['Other'];
 
-/**
- * Formats a date string into a display-friendly format
- * @param {string} dateStr - ISO date string
- * @returns {object} Formatted day and month
- */
 const formatExpenseDate = (dateStr) => {
   const date = new Date(dateStr);
   return {
@@ -38,7 +23,6 @@ const formatExpenseDate = (dateStr) => {
 };
 
 const ExpenseList = ({ expenses, onDeleteExpense }) => {
-  // Handle expense deletion with user confirmation
   const handleDelete = useCallback(async (id) => {
     const confirmed = window.confirm('Are you sure you want to delete this expense? This action cannot be undone.');
     if (!confirmed) return;
@@ -54,8 +38,6 @@ const ExpenseList = ({ expenses, onDeleteExpense }) => {
       alert('Could not delete expense. Please try again.');
     }
   }, [onDeleteExpense]);
-
-  // Empty state display when no expenses exist
   if (expenses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center animate-fade-in">
@@ -87,9 +69,9 @@ const ExpenseList = ({ expenses, onDeleteExpense }) => {
             className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/40 border border-white/5 hover:bg-slate-800/60 hover:border-white/10 transition-all duration-300"
             role="listitem"
           >
-            {/* Left Section: Date Badge + Expense Details */}
+
             <div className="flex items-center gap-4">
-              {/* Date Badge - Hidden on small screens */}
+
               <div className="hidden sm:flex flex-col items-center justify-center h-12 w-12 rounded-xl bg-slate-950/50 border border-white/5 text-slate-300 text-xs font-bold">
                 <span>{dateInfo.day}</span>
                 <span className="text-[10px] uppercase text-slate-500 tracking-wider">
@@ -97,7 +79,7 @@ const ExpenseList = ({ expenses, onDeleteExpense }) => {
                 </span>
               </div>
 
-              {/* Expense Description & Category */}
+
               <div>
                 <h4 className="font-semibold text-white group-hover:text-blue-200 transition-colors">
                   {expense.description}
@@ -106,15 +88,13 @@ const ExpenseList = ({ expenses, onDeleteExpense }) => {
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold border ${categoryStyle}`}>
                     {expense.category}
                   </span>
-                  {/* Mobile-only date display */}
+
                   <span className="text-xs text-slate-500 sm:hidden">
                     {dateInfo.full}
                   </span>
                 </div>
               </div>
             </div>
-
-            {/* Right Section: Amount & Delete Action */}
             <div className="flex items-center gap-4">
               <span className="font-extrabold text-white text-lg">
                 ${expense.amount.toFixed(2)}

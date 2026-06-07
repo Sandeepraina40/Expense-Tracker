@@ -7,7 +7,6 @@ const expenseRoutes = require('./routes/expenseRoutes');
 const dns = require("node:dns/promises");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
-// Load env vars (.env wins over stale Windows/user env variables)
 dotenv.config({ override: true });
 
 const geminiKey = process.env.GEMINI_API_KEY?.trim();
@@ -19,16 +18,13 @@ if (geminiKey) {
   console.warn('Gemini AI: GEMINI_API_KEY is missing in backend/.env');
 }
 
-// Connect Database
 connectDB();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Main Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 

@@ -37,7 +37,6 @@ function parseGeminiError(error) {
     const parsed = JSON.parse(raw);
     detail = parsed?.error?.message || raw;
   } catch {
-    // message may already be plain text
   }
 
   const lower = detail.toLowerCase();
@@ -283,12 +282,8 @@ ${JSON.stringify(report, null, 2)}`;
 }
 
 module.exports = {
-  getModel,
-  getApiKey,
   parseGeminiError,
-  buildExpenseReport,
   generateStructuredInsights,
   generateQuickTips,
   answerFinancialQuestion,
-  generateText,
 };

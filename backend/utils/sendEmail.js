@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-  // Create a transporter
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -9,17 +8,12 @@ const sendEmail = async (options) => {
       pass: process.env.EMAIL_PASS,
     },
   });
-
-  // Define the email options
   const mailOptions = {
     from: `Expense Tracker Team <${process.env.EMAIL_USER}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,
-    html: options.html,
   };
-
-  // Send the email
   await transporter.sendMail(mailOptions);
 };
 

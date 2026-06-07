@@ -261,20 +261,23 @@ const AIAssistant = ({ getAuthHeaders, expenseCount, onClose }) => {
           </div>
 
           <div className="flex gap-1 p-1 bg-white/5 rounded-xl">
-            {TABS.map(({ id, label, icon: Icon }) => (
+            {TABS.map((tab) => {
+              const TabIcon = tab.icon;
+              return (
               <button
-                key={id}
-                onClick={() => handleTabChange(id)}
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium py-2.5 px-2 rounded-lg transition-all ${
-                  activeTab === id
+                  activeTab === tab.id
                     ? 'bg-purple-600 text-white shadow-lg'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="hidden sm:inline">{label}</span>
+                <TabIcon className="h-4 w-4 shrink-0" />
+                <span className="hidden sm:inline">{tab.label}</span>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 

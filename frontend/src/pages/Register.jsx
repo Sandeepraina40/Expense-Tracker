@@ -1,23 +1,18 @@
-
 import { useState, useContext, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import { UserPlus, Activity, User, Mail, Lock, ShieldCheck } from 'lucide-react';
 
 const Register = () => {
-  // Form field states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Auth context and navigation hooks
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Validate form inputs before submission
   const validateForm = useCallback(() => {
     if (!name.trim()) {
       return 'Please enter your full name.';
@@ -30,13 +25,9 @@ const Register = () => {
     }
     return null;
   }, [name, password, confirmPassword]);
-
-  // Handle registration form submission
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
-
-    // Run client-side validation
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -52,7 +43,7 @@ const Register = () => {
         setError(result.message);
         setLoading(false);
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred during registration.');
       setLoading(false);
     }
@@ -60,13 +51,11 @@ const Register = () => {
 
   return (
     <div className="relative flex h-screen min-h-screen items-center justify-center overflow-hidden bg-[#020617]">
-      {/* Animated Background Gradient Orbs */}
       <div className="absolute top-[-10%] right-[-10%] h-96 w-96 rounded-full bg-indigo-600/20 blur-[120px] mix-blend-screen animate-pulse-slow"></div>
       <div className="absolute bottom-[-10%] left-[-10%] h-96 w-96 rounded-full bg-pink-600/20 blur-[120px] mix-blend-screen animate-pulse-slow"></div>
       <div className="absolute top-[30%] left-[20%] h-64 w-64 rounded-full bg-violet-600/10 blur-[100px] mix-blend-screen"></div>
 
       <div className="relative z-10 w-full max-w-md px-6 animate-slide-up">
-        {/* Brand Header Section */}
         <div className="mb-8 text-center flex flex-col items-center">
           <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-pink-500 shadow-lg shadow-indigo-500/30 mb-6">
             <Activity className="h-8 w-8 text-white" />
@@ -78,10 +67,7 @@ const Register = () => {
             Create your account and start managing your finances.
           </p>
         </div>
-
-        {/* Registration Form Card with Glassmorphic Styling */}
         <div className="glass rounded-3xl p-8 sm:p-10">
-          {/* Error Alert Display */}
           {error && (
             <div
               className="mb-6 rounded-xl bg-red-500/10 p-4 border border-red-500/20 text-sm text-red-400 flex items-center gap-3 animate-fade-in"
@@ -93,7 +79,6 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-            {/* Full Name Input */}
             <div className="space-y-1.5">
               <label htmlFor="register-name" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <User className="h-3.5 w-3.5 text-slate-400" />
@@ -110,8 +95,6 @@ const Register = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-
-            {/* Email Input */}
             <div className="space-y-1.5">
               <label htmlFor="register-email" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <Mail className="h-3.5 w-3.5 text-slate-400" />
@@ -129,7 +112,6 @@ const Register = () => {
               />
             </div>
 
-            {/* Password Input */}
             <div className="space-y-1.5">
               <label htmlFor="register-password" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <Lock className="h-3.5 w-3.5 text-slate-400" />
@@ -148,8 +130,6 @@ const Register = () => {
               />
               <p className="text-xs text-slate-500 ml-1">Must be at least 6 characters</p>
             </div>
-
-            {/* Confirm Password Input */}
             <div className="space-y-1.5">
               <label htmlFor="register-confirm-password" className="text-sm font-medium text-slate-300 ml-1 flex items-center gap-1.5">
                 <ShieldCheck className="h-3.5 w-3.5 text-slate-400" />
@@ -167,8 +147,6 @@ const Register = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
-
-            {/* Submit Button with Loading State */}
             <button
               type="submit"
               disabled={loading}
@@ -187,8 +165,6 @@ const Register = () => {
               )}
             </button>
           </form>
-
-          {/* Navigation Link to Login Page */}
           <div className="mt-8 text-center text-sm">
             <span className="text-slate-400">Already registered? </span>
             <Link
